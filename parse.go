@@ -162,7 +162,11 @@ func (pp *preProcessor) run(normalParam *normalParam) (*abnormalParam, error) {
 	}
 	buf.Reset()
 
-	memLimit := min(pp.config.maxMemFileSize, pp.config.maxMemSize)
+	// memLimit := min(pp.config.maxMemFileSize, pp.config.maxMemSize)
+	memLimit := pp.config.maxMemFileSize
+	if pp.config.maxMemSize < memLimit {
+		memLimit = pp.config.maxMemSize
+	}
 	n, err := io.CopyN(buf, normalParam.r, int64(memLimit)+1)
 	if err != nil && !errors.Is(err, io.EOF) {
 		return nil, fmt.Errorf("failed to copy: %w", err)
