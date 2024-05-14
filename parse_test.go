@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mazrean/formstream/internal/condition_judge/mock"
+	"github.com/marco-rozz/formstream/internal/condition_judge/mock"
 	"go.uber.org/mock/gomock"
 )
 

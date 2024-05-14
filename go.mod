@@ -1,12 +1,9 @@
 module github.com/marco-rozz/formstream
 
-go 1.21.5
-
-toolchain go1.22.3
+go 1.20
 
 require (
 	github.com/labstack/echo/v4 v4.12.0
-	github.com/mazrean/formstream v1.1.0
 	go.uber.org/mock v0.4.0
 	golang.org/x/sync v0.7.0
 )

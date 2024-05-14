@@ -13,7 +13,7 @@ import (
 	"testing"
 
 	"github.com/marco-rozz/formstream"
-	"github.com/mazrean/formstream/internal/myio"
+	"github.com/marco-rozz/formstream/internal/myio"
 )
 
 func ExampleNewParser() {

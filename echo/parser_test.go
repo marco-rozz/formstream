@@ -11,7 +11,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/marco-rozz/formstream"
-	echoform "github.com/mazrean/formstream/echo"
+	echoform "github.com/marco-rozz/formstream/echo"
 )
 
 func TestExample(t *testing.T) {

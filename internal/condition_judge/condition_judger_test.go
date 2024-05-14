@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	conditionjudge "github.com/mazrean/formstream/internal/condition_judge"
+	conditionjudge "github.com/marco-rozz/formstream/internal/condition_judge"
 )
 
 var errTest = errors.New("test error")

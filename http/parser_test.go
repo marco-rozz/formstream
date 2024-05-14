@@ -15,8 +15,8 @@ import (
 	"testing"
 
 	"github.com/marco-rozz/formstream"
-	httpform "github.com/mazrean/formstream/http"
-	"github.com/mazrean/formstream/internal/myio"
+	httpform "github.com/marco-rozz/formstream/http"
+	"github.com/marco-rozz/formstream/internal/myio"
 	"golang.org/x/sync/errgroup"
 )
 
