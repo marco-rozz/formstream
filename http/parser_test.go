@@ -14,7 +14,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mazrean/formstream"
+	"github.com/marco-rozz/formstream"
 	httpform "github.com/mazrean/formstream/http"
 	"github.com/mazrean/formstream/internal/myio"
 	"golang.org/x/sync/errgroup"

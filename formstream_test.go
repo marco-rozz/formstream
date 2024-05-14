@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mazrean/formstream"
+	"github.com/marco-rozz/formstream"
 	"github.com/mazrean/formstream/internal/myio"
 )
 

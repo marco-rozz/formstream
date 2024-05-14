@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/mazrean/formstream"
-	httpform "github.com/mazrean/formstream/http"
+	"github.com/marco-rozz/formstream"
+	httpform "github.com/marco-rozz/formstream/http"
 )
 
 const iconDir = "icons"

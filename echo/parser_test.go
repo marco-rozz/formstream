@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/labstack/echo/v4"
-	"github.com/mazrean/formstream"
+	"github.com/marco-rozz/formstream"
 	echoform "github.com/mazrean/formstream/echo"
 )
 
