@@ -1,5 +1,8 @@
-run:
-  skip-dirs:
+#run:
+#  skip-dirs:
+#    - example
+issues:
+  exclude-dirs:
     - example
 linters:
   enable:

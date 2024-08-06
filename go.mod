@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/labstack/echo/v4 v4.12.0
 	go.uber.org/mock v0.4.0
-	golang.org/x/sync v0.7.0
+	golang.org/x/sync v0.8.0
 )
 
 require (
