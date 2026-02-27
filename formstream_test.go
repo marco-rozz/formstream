@@ -1,3 +1,4 @@
+//nolint:dupl
 package formstream_test
 
 import (

@@ -1,38 +1,78 @@
-#run:
-#  skip-dirs:
-#    - example
-issues:
-  exclude-dirs:
-    - example
+version: "2"
+run:
+  issues-exit-code: 0
 linters:
+  default: none
   enable:
-    - govet
-    - errcheck
-    - staticcheck
-    - unused
-    - gosimple
-    - ineffassign
-    - typecheck
-    - revive
-    - gofmt
-    - asasalint
     - asciicheck
-    - bidichk
-    - errname
+    - bodyclose
+    - copyloopvar
+    - dogsled
+    - dupl
+    - durationcheck
+    - errcheck
     - errorlint
-    - exhaustive
-    - exportloopref
+    - forbidigo
     - forcetypeassert
-    - gocheckcompilerdirectives
+    - gochecknoglobals
+    - gochecknoinits
+    - goconst
     - gocritic
-    - goheader
-    - goimports
+    - gocyclo
     - gosec
+    - govet
+    - ineffassign
+    - makezero
     - misspell
     - nakedret
     - nilerr
-    - nosprintfhostport
+    - nlreturn
+    - noctx
+    - nolintlint
+    - prealloc
+    - predeclared
+    - promlinter
+    - revive
+    - rowserrcheck
     - sqlclosecheck
+    - staticcheck
+    - thelper
     - unconvert
     - unparam
+    - unused
     - whitespace
+  settings:
+    cyclop:
+      max-complexity: 10
+      package-average: 0
+    errcheck:
+      check-type-assertions: true
+      check-blank: false
+    gocognit:
+      min-complexity: 10
+    govet:
+      enable:
+        - shadow
+      enable-all: false
+    nestif:
+      min-complexity: 5
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

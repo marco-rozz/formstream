@@ -87,7 +87,7 @@ func (p *Parser) parse(r io.Reader, hsc conditionjudge.IConditionJudger[string, 
 				return fmt.Errorf("failed to copy part: %w", err)
 			}
 
-			if uint64(n) > uint64(p.maxMemSize) {
+			if n < 0 || DataSize(n) > p.maxMemSize {
 				return ErrTooLargeForm
 			}
 			p.maxMemSize -= DataSize(n)
@@ -149,6 +149,7 @@ type preProcessor struct {
 	file   *os.File
 }
 
+//nolint:gochecknoglobals
 var bufPool = sync.Pool{
 	New: func() interface{} {
 		return new(bytes.Buffer)

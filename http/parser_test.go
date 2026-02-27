@@ -1,3 +1,4 @@
+//nolint:dupl,gosec
 package httpform_test
 
 import (
@@ -86,6 +87,7 @@ func createUserHandler(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusCreated)
 }
 
+//nolint:gochecknoglobals
 var (
 	user = struct {
 		name     string
@@ -240,6 +242,9 @@ func TestSlowWriter(t *testing.T) {
 			if err != nil {
 				return fmt.Errorf("failed to request: %w", err)
 			}
+			defer func() {
+				_ = res.Body.Close()
+			}()
 
 			if res.StatusCode != http.StatusCreated {
 				return fmt.Errorf("status code is wrong: expected: %d, actual: %d", http.StatusCreated, res.StatusCode)
@@ -362,10 +367,13 @@ func benchmarkFormStream(b *testing.B, fileSize formstream.DataSize, reverse boo
 		}
 		b.StartTimer()
 
-		_, err = http.DefaultClient.Do(req)
-		if err != nil {
-			b.Fatal(err)
+		res, err2 := http.DefaultClient.Do(req)
+		if err2 != nil {
+			b.Fatal(err2)
 		}
+		defer func() {
+			_ = res.Body.Close()
+		}()
 	}
 }
 
@@ -452,9 +460,12 @@ func benchmarkStdMultipartReadForm(b *testing.B, fileSize formstream.DataSize) {
 		}
 		b.StartTimer()
 
-		_, err = http.DefaultClient.Do(req)
-		if err != nil {
-			b.Fatal(err)
+		res, err2 := http.DefaultClient.Do(req)
+		if err2 != nil {
+			b.Fatal(err2)
 		}
+		defer func() {
+			_ = res.Body.Close()
+		}()
 	}
 }

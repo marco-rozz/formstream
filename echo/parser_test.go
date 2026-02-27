@@ -78,6 +78,7 @@ func createUserHandler(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
+//nolint:gochecknoglobals
 var (
 	user = struct {
 		name     string

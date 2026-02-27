@@ -83,7 +83,7 @@ func main() {
 	})
 	mux.Handle("/icons/", http.StripPrefix("/icons/", http.FileServer(http.Dir(iconDir))))
 
-	err = http.ListenAndServe(":8080", mux)
+	err = http.ListenAndServe(":8080", mux) //nolint:gosec
 	if err != nil {
 		panic(err)
 	}
