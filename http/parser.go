@@ -5,7 +5,7 @@ import (
 	"mime"
 	"net/http"
 
-	"github.com/marco-rozz/formstream"
+	"github.com/marco-rozz/formstream/v2"
 )
 
 type Parser struct {

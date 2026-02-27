@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/labstack/echo/v4"
-	"github.com/marco-rozz/formstream"
-	echoform "github.com/marco-rozz/formstream/echo"
+	"github.com/labstack/echo/v5"
+	"github.com/marco-rozz/formstream/v2"
+	echoform "github.com/marco-rozz/formstream/v2/echo"
 )
 
 func TestExample(t *testing.T) {
@@ -40,6 +40,7 @@ icon contents
 	err := createUserHandler(c)
 	if err != nil {
 		t.Fatalf("failed to create user: %s\n", err)
+
 		return
 	}
 
@@ -54,7 +55,7 @@ icon contents
 	}
 }
 
-func createUserHandler(c echo.Context) error {
+func createUserHandler(c *echo.Context) error {
 	parser, err := echoform.NewParser(c)
 	if err != nil {
 		return c.NoContent(http.StatusBadRequest)

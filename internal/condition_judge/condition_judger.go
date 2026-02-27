@@ -45,6 +45,7 @@ func NewConditionJudger[K comparable, S any, T any](hookMap map[K]Hook[K, S, T],
 
 		if len(requirements) == 0 {
 			satisfiedHookMap[key] = hook.NormalPath
+
 			continue
 		}
 
@@ -72,8 +73,8 @@ func (w *ConditionJudger[K, S, T]) IsHookExist(key K) bool {
 	if _, ok := w.satisfiedHookMap[key]; ok {
 		return true
 	}
-
 	_, ok := w.unsatisfiedHookMap[key]
+
 	return ok
 }
 

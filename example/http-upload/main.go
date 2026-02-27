@@ -1,3 +1,4 @@
+//nolint:govet
 package main
 
 import (
@@ -7,8 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/marco-rozz/formstream"
-	httpform "github.com/marco-rozz/formstream/http"
+	"github.com/marco-rozz/formstream/v2"
+	httpform "github.com/marco-rozz/formstream/v2/http"
 )
 
 const iconDir = "icons"
@@ -24,18 +25,21 @@ func main() {
 	mux.HandleFunc("/submit", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+
 			return
 		}
 
 		parser, err := httpform.NewParser(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
+
 			return
 		}
 
 		err = parser.Register("icon", func(r io.Reader, header formstream.Header) error {
 			if header.ContentType() != "image/png" {
 				http.Error(w, "content type is not supported", http.StatusBadRequest)
+
 				return fmt.Errorf("content type is not supported")
 			}
 
@@ -45,17 +49,20 @@ func main() {
 			_, err := os.Stat(iconPath)
 			if err != nil && !os.IsNotExist(err) {
 				http.Error(w, "failed to check file existence", http.StatusInternalServerError)
+
 				return fmt.Errorf("failed to check file existence: %w", err)
 			}
 
 			if err == nil {
 				http.Error(w, "user already exists", http.StatusConflict)
+
 				return fmt.Errorf("user already exists")
 			}
 
 			file, err := os.Create(iconPath)
 			if err != nil {
 				http.Error(w, "failed to create file", http.StatusInternalServerError)
+
 				return fmt.Errorf("failed to create file: %w", err)
 			}
 			defer file.Close()
@@ -63,6 +70,7 @@ func main() {
 			_, err = io.Copy(file, r)
 			if err != nil {
 				http.Error(w, "failed to copy", http.StatusInternalServerError)
+
 				return fmt.Errorf("failed to copy: %w", err)
 			}
 
@@ -70,12 +78,14 @@ func main() {
 		}, formstream.WithRequiredPart("id"))
 		if err != nil {
 			http.Error(w, "failed to register hook", http.StatusInternalServerError)
+
 			return
 		}
 
 		err = parser.Parse()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
+
 			return
 		}
 

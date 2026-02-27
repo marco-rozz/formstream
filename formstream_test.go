@@ -1,4 +1,4 @@
-//nolint:dupl
+//nolint:dupl,govet
 package formstream_test
 
 import (
@@ -13,8 +13,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/marco-rozz/formstream"
-	"github.com/marco-rozz/formstream/internal/myio"
+	"github.com/marco-rozz/formstream/v2"
+	"github.com/marco-rozz/formstream/v2/internal/myio"
 )
 
 func ExampleNewParser() {
@@ -194,16 +194,19 @@ func BenchmarkFormStreamSlowPath(b *testing.B) {
 }
 
 func benchmarkFormStream(b *testing.B, fileSize formstream.DataSize, reverse bool) {
+	b.Helper()
 	r, err := sampleForm(fileSize, boundary, reverse)
 	if err != nil {
 		b.Fatal(err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		_, err := r.Seek(0, io.SeekStart)
+		_, err = r.Seek(0, io.SeekStart)
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -261,11 +264,14 @@ func BenchmarkStdMultipartNextPart(b *testing.B) {
 }
 
 func benchmarkStdMultipartNextPart(b *testing.B, fileSize formstream.DataSize) {
+	b.Helper()
 	r, err := sampleForm(fileSize, boundary, false)
 	if err != nil {
 		b.Fatal(err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -313,6 +319,7 @@ func benchmarkStdMultipartNextPart(b *testing.B, fileSize formstream.DataSize) {
 }
 
 func BenchmarkStdMultipartReadForm(b *testing.B) {
+	b.Helper()
 	b.Run("1MB", func(b *testing.B) {
 		benchmarkStdMultipartReadForm(b, 1*formstream.MB)
 	})
@@ -340,6 +347,7 @@ func BenchmarkStdMultipartReadForm(b *testing.B) {
 }
 
 func benchmarkStdMultipartReadForm(b *testing.B, fileSize formstream.DataSize) {
+	b.Helper()
 	// default value in http package
 	const maxMemory = 32 * formstream.MB
 
@@ -347,7 +355,9 @@ func benchmarkStdMultipartReadForm(b *testing.B, fileSize formstream.DataSize) {
 	if err != nil {
 		b.Fatal(err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -375,7 +385,9 @@ func benchmarkStdMultipartReadForm(b *testing.B, fileSize formstream.DataSize) {
 			if err != nil {
 				b.Fatal(err)
 			}
-			defer f.Close()
+			defer func() {
+				_ = f.Close()
+			}()
 
 			_, err = io.Copy(io.Discard, f)
 			if err != nil {

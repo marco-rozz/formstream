@@ -9,7 +9,7 @@ import (
 	"os"
 	"sync"
 
-	conditionjudge "github.com/marco-rozz/formstream/internal/condition_judge"
+	conditionjudge "github.com/marco-rozz/formstream/v2/internal/condition_judge"
 )
 
 var (
@@ -50,6 +50,7 @@ func (p *Parser) parse(r io.Reader, hsc conditionjudge.IConditionJudger[string, 
 			if errors.Is(err, io.EOF) {
 				break
 			}
+
 			return fmt.Errorf("failed to read next part: %w", err)
 		}
 
@@ -67,7 +68,7 @@ func (p *Parser) parse(r io.Reader, hsc conditionjudge.IConditionJudger[string, 
 
 		header := newHeader(part.Header)
 		if hsc.IsHookExist(part.FormName()) {
-			_, err := hsc.HookEvent(part.FormName(), &normalParam{
+			_, err = hsc.HookEvent(part.FormName(), &normalParam{
 				r: part,
 				h: header,
 			})
@@ -82,7 +83,8 @@ func (p *Parser) parse(r io.Reader, hsc conditionjudge.IConditionJudger[string, 
 			}
 			p.maxMemSize -= DataSize(len(part.FormName()))
 
-			n, err := io.Copy(b, part)
+			var n int64
+			n, err = io.Copy(b, part)
 			if err != nil {
 				return fmt.Errorf("failed to copy part: %w", err)
 			}
@@ -208,6 +210,7 @@ func (pp *preProcessor) run(normalParam *normalParam) (*abnormalParam, error) {
 				bufPool.Put(buf)
 				pp.config.maxMemSize += DataSize(bufSize)
 				pp.config.maxMemFileSize += DataSize(bufSize)
+
 				return nil
 			},
 		}

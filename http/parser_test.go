@@ -1,4 +1,4 @@
-//nolint:dupl,gosec
+//nolint:dupl,gosec,govet
 package httpform_test
 
 import (
@@ -15,9 +15,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/marco-rozz/formstream"
-	httpform "github.com/marco-rozz/formstream/http"
-	"github.com/marco-rozz/formstream/internal/myio"
+	"github.com/marco-rozz/formstream/v2"
+	httpform "github.com/marco-rozz/formstream/v2/http"
+	"github.com/marco-rozz/formstream/v2/internal/myio"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -45,6 +45,7 @@ icon contents
 
 	if rec.Code != http.StatusCreated {
 		t.Errorf("status code is wrong: expected: %d, actual: %d\n", http.StatusCreated, rec.Code)
+
 		return
 	}
 
@@ -63,6 +64,7 @@ func createUserHandler(res http.ResponseWriter, req *http.Request) {
 	parser, err := httpform.NewParser(req)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
+
 		return
 	}
 
@@ -75,12 +77,14 @@ func createUserHandler(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Printf("failed to register: %s\n", err)
 		res.WriteHeader(http.StatusInternalServerError)
+
 		return
 	}
 
 	err = parser.Parse()
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
+
 		return
 	}
 
@@ -147,7 +151,7 @@ func createSampleForm(w io.Writer, fileSize formstream.DataSize, boundary string
 	}
 
 	if !reverse {
-		err := mw.WriteField("field", "value")
+		err = mw.WriteField("field", "value")
 		if err != nil {
 			return fmt.Errorf("failed to write field: %w", err)
 		}
@@ -168,7 +172,7 @@ func createSampleForm(w io.Writer, fileSize formstream.DataSize, boundary string
 	}
 
 	if reverse {
-		err := mw.WriteField("field", "value")
+		err = mw.WriteField("field", "value")
 		if err != nil {
 			return fmt.Errorf("failed to write field: %w", err)
 		}
@@ -186,6 +190,7 @@ func TestSlowWriter(t *testing.T) {
 		parser, err := httpform.NewParser(r)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
+
 			return
 		}
 
@@ -193,7 +198,7 @@ func TestSlowWriter(t *testing.T) {
 			// get field value
 			_, _, _ = parser.Value("field")
 
-			_, err := io.Copy(myio.SlowWriter(), r)
+			_, err = io.Copy(myio.SlowWriter(), r)
 			if err != nil {
 				return fmt.Errorf("failed to copy: %w", err)
 			}
@@ -217,7 +222,9 @@ func TestSlowWriter(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 
 	err = createSampleForm(f, 1*formstream.GB, boundary, false)
 	if err != nil {
@@ -231,7 +238,7 @@ func TestSlowWriter(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		req, err := http.NewRequest(http.MethodPost, srv.URL, f)
+		req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, srv.URL, f)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -315,10 +322,12 @@ func BenchmarkFormStreamSlowPath(b *testing.B) {
 }
 
 func benchmarkFormStream(b *testing.B, fileSize formstream.DataSize, reverse bool) {
+	b.Helper()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		parser, err := httpform.NewParser(r)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
+
 			return
 		}
 
@@ -350,9 +359,11 @@ func benchmarkFormStream(b *testing.B, fileSize formstream.DataSize, reverse boo
 	if err != nil {
 		b.Fatal(err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
-	req, err := http.NewRequest(http.MethodPost, srv.URL, r)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, srv.URL, r)
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -361,7 +372,7 @@ func benchmarkFormStream(b *testing.B, fileSize formstream.DataSize, reverse boo
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		_, err := r.Seek(0, io.SeekStart)
+		_, err = r.Seek(0, io.SeekStart)
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -371,9 +382,7 @@ func benchmarkFormStream(b *testing.B, fileSize formstream.DataSize, reverse boo
 		if err2 != nil {
 			b.Fatal(err2)
 		}
-		defer func() {
-			_ = res.Body.Close()
-		}()
+		_ = res.Body.Close()
 	}
 }
 
@@ -405,6 +414,7 @@ func BenchmarkStdMultipartReadForm(b *testing.B) {
 }
 
 func benchmarkStdMultipartReadForm(b *testing.B, fileSize formstream.DataSize) {
+	b.Helper()
 	// default value in http package
 	const maxMemory = 32 * formstream.MB
 
@@ -443,9 +453,11 @@ func benchmarkStdMultipartReadForm(b *testing.B, fileSize formstream.DataSize) {
 	if err != nil {
 		b.Fatal(err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
-	req, err := http.NewRequest(http.MethodPost, srv.URL, r)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, srv.URL, r)
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -464,8 +476,6 @@ func benchmarkStdMultipartReadForm(b *testing.B, fileSize formstream.DataSize) {
 		if err2 != nil {
 			b.Fatal(err2)
 		}
-		defer func() {
-			_ = res.Body.Close()
-		}()
+		_ = res.Body.Close()
 	}
 }

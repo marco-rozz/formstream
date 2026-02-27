@@ -6,16 +6,21 @@ import (
 	"mime"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
-	"github.com/marco-rozz/formstream"
+	"github.com/labstack/echo/v5"
+	"github.com/marco-rozz/formstream/v2"
 )
+
+// ContextReader is a minimal interface for extracting request data from echo.Context
+type ContextReader interface {
+	Request() *http.Request
+}
 
 type Parser struct {
 	*formstream.Parser
 	reader io.Reader
 }
 
-func NewParser(c echo.Context, options ...formstream.ParserOption) (*Parser, error) {
+func NewParser(c ContextReader, options ...formstream.ParserOption) (*Parser, error) {
 	contentType := c.Request().Header.Get("Content-Type")
 	d, params, err := mime.ParseMediaType(contentType)
 	if err != nil || d != "multipart/form-data" {

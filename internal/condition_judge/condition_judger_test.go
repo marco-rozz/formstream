@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	conditionjudge "github.com/marco-rozz/formstream/internal/condition_judge"
+	conditionjudge "github.com/marco-rozz/formstream/v2/internal/condition_judge"
 )
 
 var errTest = errors.New("test error")
@@ -23,6 +23,7 @@ func (h *mockHook) NormalPath(value string) error {
 	}
 
 	h.lastNormalValue = value
+
 	return nil
 }
 
@@ -32,6 +33,7 @@ func (h *mockHook) AbnormalPath(value string) error {
 	}
 
 	h.lastAbnormalValue = value
+
 	return nil
 }
 
