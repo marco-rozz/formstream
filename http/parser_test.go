@@ -1,4 +1,4 @@
-//nolint:dupl,gosec,govet
+//nolint:dupl,govet
 package httpform_test
 
 import (
@@ -22,7 +22,7 @@ import (
 )
 
 func TestExample(t *testing.T) {
-	req := httptest.NewRequest(http.MethodPost, "/user", strings.NewReader(`
+	req := httptest.NewRequestWithContext(context.Background(), http.MethodPost, "/user", strings.NewReader(`
 --boundary
 Content-Disposition: form-data; name="name"
 

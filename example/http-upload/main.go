@@ -44,7 +44,13 @@ func main() {
 			}
 
 			id, _, _ := parser.Value("id")
-			iconPath := filepath.Join(iconDir, id)
+			safeID := filepath.Base(filepath.Clean(id))
+			if safeID == "." || safeID == string(filepath.Separator) {
+				http.Error(w, "invalid id", http.StatusBadRequest)
+
+				return fmt.Errorf("invalid id")
+			}
+			iconPath := filepath.Join(iconDir, safeID)
 
 			_, err := os.Stat(iconPath)
 			if err != nil && !os.IsNotExist(err) {

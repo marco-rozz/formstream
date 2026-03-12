@@ -17,7 +17,7 @@ import (
 func TestExample(t *testing.T) {
 	e := echo.New()
 
-	req := httptest.NewRequest(http.MethodPost, "/user", strings.NewReader(`
+	req := httptest.NewRequestWithContext(context.Background(), http.MethodPost, "/user", strings.NewReader(`
 --boundary
 Content-Disposition: form-data; name="name"
 
